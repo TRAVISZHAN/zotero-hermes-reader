@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Hermes Reading Assistant (Zotero 9)",
+  "version": "0.7.1",
+  "description": "Paper-scoped Hermes chat, PDF selection questions, and confirmed Obsidian drafts in Zotero 9.",
+  "homepage_url": "https://hermes-agent.nousresearch.com/",
+  "icons": {
+    "48": "content/icons/hermes-reader.svg",
+    "96": "content/icons/hermes-reader.svg"
+  },
+  "applications": {
+    "zotero": {
+      "id": "hermes-reading-assistant-z9@altail.local",
+      "update_url": "https://raw.githubusercontent.com/TRAVISZHAN/zotero-hermes-reader/main/update.json",
+      "strict_min_version": "9.0",
+      "strict_max_version": "9.0.*"
+    }
+  }
+}

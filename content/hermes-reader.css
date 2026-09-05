@@ -1,0 +1,548 @@
+.hermes-reader-z9 {
+  --hermes-accent: #136f63;
+  --hermes-accent-hover: #0d5d54;
+  --hermes-border: var(--material-border, color-mix(in srgb, currentColor 16%, transparent));
+  --hermes-surface: var(--material-background, #ffffff);
+  --hermes-subtle: color-mix(in srgb, currentColor 6%, transparent);
+  --hermes-user: color-mix(in srgb, #2673c9 11%, transparent);
+  --hermes-answer: color-mix(in srgb, #17805f 9%, transparent);
+  box-sizing: border-box;
+  color: var(--fill-primary, #202124);
+  display: flex;
+  flex-direction: column;
+  font: message-box;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 8px 12px;
+  /* The item pane's own column (.zotero-view-item-main) is a row flex item with
+     min-width:auto, so anything wide in here would push the whole pane —
+     including Zotero's item title — past the right edge. Inline-size
+     containment makes this box's width depend only on its container. */
+  contain: inline-size;
+  max-width: 100%;
+}
+
+.hermes-reader-z9 *,
+.hermes-reader-z9 *::before,
+.hermes-reader-z9 *::after {
+  box-sizing: border-box;
+}
+
+.hermes-reader-z9-paper,
+.hermes-reader-z9-selection-head,
+.hermes-reader-z9-status-row,
+.hermes-reader-z9-draft-head,
+.hermes-reader-z9-draft-actions,
+.hermes-reader-z9-request-actions {
+  align-items: center;
+  display: flex;
+}
+
+.hermes-reader-z9-paper {
+  align-items: flex-start;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.hermes-reader-z9-head-tools {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+.hermes-reader-z9-paper-text {
+  min-width: 0;
+}
+
+/* Titles and 30-author lists are clamped; the full text is in the tooltip. */
+.hermes-reader-z9-title {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  font-size: 1em;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.hermes-reader-z9-meta {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  overflow: hidden;
+}
+
+.hermes-reader-z9-meta,
+.hermes-reader-z9-status,
+.hermes-reader-z9-empty,
+.hermes-reader-z9-restored {
+  color: var(--fill-secondary, #62666d);
+  font-size: 0.88em;
+  line-height: 1.4;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hermes-reader-z9-connection {
+  background: color-mix(in srgb, #168b64 13%, transparent);
+  border: 1px solid color-mix(in srgb, #168b64 28%, transparent);
+  border-radius: 999px;
+  color: #106347;
+  flex: 0 0 auto;
+  font-size: 0.78em;
+  line-height: 1.25;
+  max-width: 112px;
+  overflow: hidden;
+  padding: 3px 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hermes-reader-z9-connection.is-error,
+.hermes-reader-z9-status.is-error {
+  color: #b42318;
+}
+
+.hermes-reader-z9-actions {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hermes-reader-z9 button,
+.hermes-reader-z9 textarea {
+  font: inherit;
+}
+
+.hermes-reader-z9 button {
+  cursor: pointer;
+}
+
+.hermes-reader-z9 button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.hermes-reader-z9-action,
+.hermes-reader-z9-secondary,
+.hermes-reader-z9-retry {
+  background: var(--hermes-surface);
+  border: 1px solid var(--hermes-border);
+  border-radius: 5px;
+  color: inherit;
+  min-height: 30px;
+  padding: 5px 8px;
+}
+
+.hermes-reader-z9-action:hover:not(:disabled),
+.hermes-reader-z9-secondary:hover:not(:disabled),
+.hermes-reader-z9-retry:hover:not(:disabled) {
+  background: var(--hermes-subtle);
+}
+
+.hermes-reader-z9-actions .hermes-reader-z9-action:last-child {
+  grid-column: 1 / -1;
+}
+
+.hermes-reader-z9-selection {
+  background: color-mix(in srgb, #d89414 8%, transparent);
+  border-left: 3px solid #c27b00;
+  border-radius: 3px;
+  padding: 7px 8px;
+}
+
+.hermes-reader-z9-selection-head {
+  justify-content: space-between;
+}
+
+.hermes-reader-z9-page {
+  color: #8a5700;
+  font-size: 0.82em;
+  font-weight: 650;
+}
+
+.hermes-reader-z9-icon-button,
+.hermes-reader-z9-stop {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--fill-secondary, #62666d);
+  display: inline-flex;
+  height: 26px;
+  justify-content: center;
+  padding: 0;
+  width: 26px;
+}
+
+.hermes-reader-z9-settings-button {
+  font-size: 1.05em;
+}
+
+.hermes-reader-z9-quote,
+.hermes-reader-z9-inline-quote,
+.hermes-reader-z9-evidence blockquote {
+  border-left: 2px solid color-mix(in srgb, currentColor 26%, transparent);
+  color: var(--fill-secondary, #53575e);
+  line-height: 1.42;
+  margin: 6px 0 0;
+  max-height: 112px;
+  overflow: auto;
+  padding-left: 7px;
+  white-space: pre-wrap;
+}
+
+.hermes-reader-z9-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: min(48vh, 520px);
+  min-height: 72px;
+  overflow: auto;
+  padding: 1px;
+}
+
+.hermes-reader-z9-empty {
+  margin: auto;
+  padding: 18px 8px;
+  text-align: center;
+}
+
+.hermes-reader-z9-message {
+  border-radius: 6px;
+  line-height: 1.48;
+  overflow-wrap: anywhere;
+  padding: 8px 9px;
+}
+
+.hermes-reader-z9-user {
+  background: var(--hermes-user);
+  margin-left: 12px;
+}
+
+.hermes-reader-z9-assistant {
+  background: var(--hermes-answer);
+  margin-right: 5px;
+}
+
+.hermes-reader-z9-error {
+  background: color-mix(in srgb, #d92d20 10%, transparent);
+  color: #b42318;
+}
+
+.hermes-reader-z9-message-label {
+  font-size: 0.78em;
+  font-weight: 650;
+  margin-bottom: 4px;
+  opacity: 0.76;
+}
+
+.hermes-reader-z9-message-content,
+.hermes-reader-z9-request-command {
+  white-space: normal;
+}
+
+.hermes-reader-z9-message-content > :first-child,
+.hermes-reader-z9-markdown-paragraph:first-child {
+  margin-top: 0;
+}
+
+.hermes-reader-z9-message-content > :last-child,
+.hermes-reader-z9-markdown-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.hermes-reader-z9-markdown-paragraph {
+  line-height: 1.5;
+  margin: 0.45em 0;
+}
+
+.hermes-reader-z9-markdown-heading {
+  line-height: 1.3;
+  margin: 0.65em 0 0.3em;
+}
+
+.hermes-reader-z9-markdown-heading:is(h1, h2, h3, h4, h5, h6) {
+  font-size: 1em;
+}
+
+.hermes-reader-z9-markdown-heading:is(h1, h2) {
+  font-weight: 700;
+}
+
+.hermes-reader-z9-markdown-heading:is(h1) {
+  font-size: 1.2em;
+}
+
+.hermes-reader-z9-markdown-heading:is(h2) {
+  font-size: 1.1em;
+}
+
+.hermes-reader-z9-markdown-list {
+  margin: 0.45em 0;
+  padding-left: 1.4em;
+}
+
+.hermes-reader-z9-markdown-list li + li {
+  margin-top: 0.25em;
+}
+
+.hermes-reader-z9-markdown-quote {
+  border-left: 3px solid color-mix(in srgb, var(--hermes-accent) 42%, transparent);
+  color: var(--fill-secondary, #53575e);
+  margin: 0.55em 0;
+  padding: 0.05em 0 0.05em 0.75em;
+}
+
+.hermes-reader-z9-code-block {
+  background: var(--hermes-subtle);
+  border: 1px solid var(--hermes-border);
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82em;
+  margin: 0.55em 0;
+  max-height: 260px;
+  overflow: auto;
+  padding: 7px;
+  white-space: pre-wrap;
+}
+
+.hermes-reader-z9-inline-code {
+  background: var(--hermes-subtle);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  padding: 1px 3px;
+}
+
+.hermes-reader-z9-markdown-table {
+  border-collapse: collapse;
+  display: block;
+  font-size: 0.9em;
+  margin: 0.6em 0;
+  max-width: 100%;
+  overflow-x: auto;
+  width: max-content;
+}
+
+.hermes-reader-z9-markdown-table th,
+.hermes-reader-z9-markdown-table td {
+  border: 1px solid var(--hermes-border);
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.hermes-reader-z9-markdown-table th {
+  background: var(--hermes-subtle);
+  font-weight: 650;
+}
+
+.hermes-reader-z9-link {
+  color: var(--hermes-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+.hermes-reader-z9-image-label {
+  color: var(--fill-secondary, #62666d);
+  font-style: italic;
+}
+
+.hermes-reader-z9-message.is-streaming .hermes-reader-z9-message-label::after {
+  animation: hermes-reader-pulse 1.2s ease-in-out infinite;
+  content: " ·";
+}
+
+.hermes-reader-z9-status-row {
+  justify-content: space-between;
+  min-height: 26px;
+}
+
+/* Enter sends, so there is no button competing for width here. */
+.hermes-reader-z9-composer {
+  display: flex;
+  min-width: 0;
+}
+
+.hermes-reader-z9-input,
+.hermes-reader-z9-draft-editor,
+.hermes-reader-z9-request-input {
+  background: var(--hermes-surface);
+  border: 1px solid var(--hermes-border);
+  border-radius: 5px;
+  color: inherit;
+  line-height: 1.45;
+  /* No `width: 100%`: dragging the resize grip can leave an inline width
+     behind, and in a sized track that overflows the panel. */
+  max-width: 100%;
+  min-width: 0;
+  padding: 7px 8px;
+  resize: vertical;
+}
+
+.hermes-reader-z9-draft-editor,
+.hermes-reader-z9-request-input {
+  width: 100%;
+}
+
+.hermes-reader-z9-input {
+  flex: 1 1 120px;
+}
+
+.hermes-reader-z9-input:focus,
+.hermes-reader-z9-draft-editor:focus,
+.hermes-reader-z9-request-input:focus {
+  border-color: var(--hermes-accent);
+  outline: 2px solid color-mix(in srgb, var(--hermes-accent) 20%, transparent);
+  outline-offset: 0;
+}
+
+.hermes-reader-z9-confirm {
+  background: var(--hermes-accent);
+  border: 1px solid var(--hermes-accent);
+  border-radius: 5px;
+  color: #ffffff;
+  min-height: 32px;
+  padding: 5px 10px;
+}
+
+.hermes-reader-z9-confirm:hover:not(:disabled) {
+  background: var(--hermes-accent-hover);
+  border-color: var(--hermes-accent-hover);
+}
+
+.hermes-reader-z9-draft,
+.hermes-reader-z9-request {
+  border: 1px solid var(--hermes-border);
+  border-radius: 6px;
+  display: grid;
+  gap: 8px;
+  padding: 9px;
+}
+
+.hermes-reader-z9-draft {
+  border-top: 3px solid #8c6bb1;
+}
+
+.hermes-reader-z9-draft-head {
+  align-items: flex-start;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.hermes-reader-z9-draft-target,
+.hermes-reader-z9-zotero-link {
+  color: var(--fill-secondary, #62666d);
+  font-size: 0.8em;
+  overflow-wrap: anywhere;
+}
+
+.hermes-reader-z9-evidence summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.hermes-reader-z9-evidence .is-warning {
+  color: #9a6700;
+}
+
+.hermes-reader-z9-draft-actions,
+.hermes-reader-z9-request-actions {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hermes-reader-z9-written {
+  color: #106347;
+  font-size: 0.86em;
+  font-weight: 650;
+}
+
+.hermes-reader-z9-request {
+  border-left: 3px solid #d08a16;
+}
+
+.hermes-reader-z9-request-title {
+  font-weight: 650;
+}
+
+.hermes-reader-z9-request-command {
+  background: var(--hermes-subtle);
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82em;
+  margin: 0;
+  max-height: 140px;
+  overflow: auto;
+  padding: 7px;
+}
+
+.hermes-reader-z9-request.is-settled,
+.hermes-reader-z9-draft.is-confirmed {
+  opacity: 0.78;
+}
+
+.hermes-reader-z9-unavailable {
+  color: var(--fill-secondary, #62666d);
+  margin: 0;
+  padding: 12px 8px;
+}
+
+.hermes-reader-z9-selection-button {
+  min-width: max-content;
+}
+
+@keyframes hermes-reader-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .hermes-reader-z9 {
+    --hermes-surface: #26282b;
+  }
+
+  .hermes-reader-z9-connection {
+    color: #7ad9b3;
+  }
+}
+
+/* KaTeX runs in `output: "mathml"` mode, so Gecko draws the formula with its
+   own math fonts — no KaTeX stylesheet or webfont ships with this plugin. */
+.hermes-reader-z9-math {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.hermes-reader-z9-math.is-display {
+  display: block;
+  margin: 0.6em 0;
+  text-align: center;
+}
+
+.hermes-reader-z9-math math {
+  font-size: 1.05em;
+}
+
+.hermes-reader-z9-session-row {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+
+.hermes-reader-z9-session-select {
+  background: var(--hermes-surface);
+  border: 1px solid var(--hermes-border);
+  border-radius: 5px;
+  color: inherit;
+  flex: 1 1 0;
+  font: inherit;
+  font-size: 0.86em;
+  min-width: 0;
+  padding: 4px 6px;
+}

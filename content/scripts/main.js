@@ -60,6 +60,12 @@ var HermesReadingAssistantZ9 = (() => {
     return node;
   }
 
+  function button(doc, label, className = "") {
+    const node = h(doc, "button", className, label);
+    node.type = "button";
+    return node;
+  }
+
   /**
    * Icons go on as a CSS background-image pointing at a chrome:// SVG — the
    * pattern Zotero uses for its own item-pane icons. An inline <svg> element
@@ -528,13 +534,7 @@ var HermesReadingAssistantZ9 = (() => {
           deleteSessionBinding(paper);
         }
       }
-      if (!response) {
-        response = await gateway.request("session.create", {
-          cols: 100,
-          source: "zotero",
-          title: `Zotero · ${paper.key} · ${paper.title}`.slice(0, 180),
-        }, 120000);
-      }
+      if (!response) response = await createPaperSession(paper);
       const session = {
         liveID: response.session_id,
         storedID: response.stored_session_id || stored || response.session_id,

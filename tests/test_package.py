@@ -8,7 +8,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-VERSION = "0.7.4"
+VERSION = "0.7.5"
 XPI = ROOT / "dist" / f"Hermes-Reading-Assistant-Zotero9-{VERSION}.xpi"
 LEDGER = XPI.with_suffix(".release.json")
 EXPECTED_ID = "hermes-reading-assistant-z9@altail.local"
@@ -259,6 +259,14 @@ class TestZotero9Package(unittest.TestCase):
                 messages,
                 ["hermes-reading-assistant-section-header", "hermes-reading-assistant-sidenav"],
             )
+
+    def test_main_js_has_no_missing_helpers(self):
+        # node --check passes on a file whose helper was deleted; that ships a
+        # blank panel. This walks the render path's dependencies instead.
+        result = subprocess.run(
+            ["node", "tests/test_undefined_calls.js"], cwd=ROOT, capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_core_protocol_helpers(self):
         result = subprocess.run(

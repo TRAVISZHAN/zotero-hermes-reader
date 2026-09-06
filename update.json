@@ -3,9 +3,9 @@
     "hermes-reading-assistant-z9@altail.local": {
       "updates": [
         {
-          "version": "0.7.1",
-          "update_link": "https://github.com/TRAVISZHAN/zotero-hermes-reader/releases/download/v0.7.1/Hermes-Reading-Assistant-Zotero9-0.7.1.xpi",
-          "update_hash": "sha256:7462975fc5f02330d2526dc34fe57908f1450b3961464f77fee773f5c9093156",
+          "version": "0.7.2",
+          "update_link": "https://github.com/TRAVISZHAN/zotero-hermes-reader/releases/download/v0.7.2/Hermes-Reading-Assistant-Zotero9-0.7.2.xpi",
+          "update_hash": "sha256:0fe623ac0bef73f3dc4504d553224454195c956096a2070b5a1706ad9824f5d5",
           "applications": {
             "zotero": {
               "strict_min_version": "9.0",

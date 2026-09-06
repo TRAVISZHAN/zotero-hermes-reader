@@ -8,7 +8,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-VERSION = "0.7.1"
+VERSION = "0.7.2"
 XPI = ROOT / "dist" / f"Hermes-Reading-Assistant-Zotero9-{VERSION}.xpi"
 LEDGER = XPI.with_suffix(".release.json")
 EXPECTED_ID = "hermes-reading-assistant-z9@altail.local"
@@ -184,6 +184,31 @@ class TestZotero9Package(unittest.TestCase):
         # because it needs mode "obsidian-draft", not just a canned question.
         self.assertNotIn("hermes-reader-z9-action\"", main)
         self.assertIn('mode: "obsidian-draft"', main)
+
+    def test_messages_are_selectable_and_copyable(self):
+        css = (ROOT / "content/hermes-reader.css").read_text(encoding="utf-8")
+        main = (ROOT / "content/scripts/main.js").read_text(encoding="utf-8")
+
+        # XUL chrome is unselectable by default; message text must opt in.
+        # `-moz-user-select` is the one Gecko actually honours here.
+        import re
+        opt_in = [
+            (sel, body) for sel, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css)
+            if "-moz-user-select: text" in body
+        ]
+        self.assertTrue(opt_in, "no rule opts message text back into selection")
+        covered = " ".join(sel for sel, _ in opt_in)
+        for needed in ["message-content", "inline-quote", "title", "meta"]:
+            self.assertIn(f"hermes-reader-z9-{needed}", covered)
+        # Buttons must stay unselectable so dragging does not grab their labels.
+        self.assertIn("-moz-user-select: none", css)
+
+        # Copy must hand back the source, not MathML-rendered glyphs.
+        self.assertIn("dataset.rawText", main)
+        self.assertIn("copyTextToClipboard", main)
+        # Streaming updates have to keep that source current.
+        self.assertIn("answer.article.dataset.rawText = answer.content.dataset.rawMarkdown", main)
+        self.assertIn("buildMessageTools", main)
 
     def test_ftl_messages_have_no_value(self):
         # A Fluent message value replaces the host element's textContent, which

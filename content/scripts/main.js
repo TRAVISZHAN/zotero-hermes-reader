@@ -1089,9 +1089,43 @@ var HermesReadingAssistantZ9 = (() => {
         article.appendChild(quote);
       }
       article.appendChild(content);
+      // Copy hands back the Markdown/LaTeX source, not the rendered text —
+      // pasting "²H(α,γ)⁶Li" out of MathML would lose the original notation.
+      article.dataset.rawText = HermesReaderCore.text(value);
+      article.appendChild(this.buildMessageTools(article, role));
       this.messages.appendChild(article);
       article.scrollIntoView({ block: "nearest" });
       return { article, content };
+    }
+
+    buildMessageTools(article, role) {
+      const tools = h(this.doc, "div", "hermes-reader-z9-message-tools");
+      const copy = button(this.doc, "复制", "hermes-reader-z9-message-tool");
+      copy.title = "复制这条消息的原始文本";
+      copy.addEventListener("click", () => {
+        const text = HermesReaderCore.text(article.dataset.rawText);
+        if (!text) return;
+        try {
+          Zotero.Utilities.Internal.copyTextToClipboard(text);
+          copy.textContent = "已复制";
+          this.doc.defaultView.setTimeout(() => { copy.textContent = "复制"; }, 1200);
+        } catch (error) {
+          this.setStatus(error.message || error, true);
+        }
+      });
+      tools.appendChild(copy);
+
+      if (role === "user") {
+        const edit = button(this.doc, "编辑", "hermes-reader-z9-message-tool");
+        edit.title = "把这条放回输入框，改完重新发送";
+        edit.addEventListener("click", () => {
+          this.input.value = HermesReaderCore.text(article.dataset.rawText);
+          this.input.focus();
+          this.input.setSelectionRange(this.input.value.length, this.input.value.length);
+        });
+        tools.appendChild(edit);
+      }
+      return tools;
     }
 
     submit() {
@@ -1124,6 +1158,7 @@ var HermesReadingAssistantZ9 = (() => {
         const finalText = await gateway.runTurn(this.session.liveID, wirePrompt, {
           onDelta: (delta) => {
             answer.content.dataset.rawMarkdown = `${answer.content.dataset.rawMarkdown || ""}${delta}`;
+            answer.article.dataset.rawText = answer.content.dataset.rawMarkdown;
             this.setMessageContent(answer.content, answer.content.dataset.rawMarkdown, true);
             answer.article.scrollIntoView({ block: "nearest" });
           },
@@ -1134,6 +1169,7 @@ var HermesReadingAssistantZ9 = (() => {
         const parsed = HermesReaderCore.parseObsidianDraft(finalText);
         const displayText = parsed.displayText || (parsed.draft ? "已生成 Obsidian 草稿。" : finalText || "Hermes 没有返回正文。");
         answer.content.dataset.rawMarkdown = displayText;
+        answer.article.dataset.rawText = displayText;
         this.setMessageContent(answer.content, displayText, true);
         if (parsed.draft) {
           if (!parsed.draft.zotero_link) parsed.draft.zotero_link = this.paper.zoteroLink;

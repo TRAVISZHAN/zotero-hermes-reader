@@ -546,3 +546,54 @@
   min-width: 0;
   padding: 4px 6px;
 }
+
+/* XUL chrome defaults to `-moz-user-select: none`, so text in the item pane
+   cannot be selected unless an element opts in — Zotero does the same thing
+   for its own selectable areas. Controls stay unselectable so dragging across
+   a message does not pick up button labels. */
+.hermes-reader-z9-message-content,
+.hermes-reader-z9-inline-quote,
+.hermes-reader-z9-quote,
+.hermes-reader-z9-title,
+.hermes-reader-z9-meta,
+.hermes-reader-z9-draft-editor,
+.hermes-reader-z9-evidence,
+.hermes-reader-z9-zotero-link,
+.hermes-reader-z9-request-command {
+  -moz-user-select: text;
+  cursor: text;
+  user-select: text;
+}
+
+.hermes-reader-z9 button {
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.hermes-reader-z9-message-tools {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+  opacity: 0;
+  transition: opacity 0.12s ease-in-out;
+}
+
+.hermes-reader-z9-message:hover .hermes-reader-z9-message-tools,
+.hermes-reader-z9-message-tools:focus-within {
+  opacity: 1;
+}
+
+.hermes-reader-z9-message-tool {
+  background: transparent;
+  border: 1px solid var(--hermes-border);
+  border-radius: 4px;
+  color: var(--fill-secondary, #62666d);
+  font-size: 0.76em;
+  line-height: 1.2;
+  padding: 2px 7px;
+}
+
+.hermes-reader-z9-message-tool:hover {
+  background: var(--hermes-surface);
+  color: inherit;
+}

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Hermes Reading Assistant (Zotero 9)",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Paper-scoped Hermes chat, PDF selection questions, and confirmed Obsidian drafts in Zotero 9.",
   "homepage_url": "https://hermes-agent.nousresearch.com/",
   "icons": {

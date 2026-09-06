@@ -599,28 +599,37 @@
 }
 
 .hermes-reader-z9-message-tool {
-  align-items: center;
-  background: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
   border: 0;
   border-radius: 4px;
-  color: var(--fill-secondary, #62666d);
-  display: inline-flex;
+  /* Lets the SVG pick up the button's colour instead of a baked-in one. */
+  -moz-context-properties: fill, stroke;
+  fill: none;
   height: 22px;
-  justify-content: center;
+  opacity: 0.65;
   padding: 0;
+  stroke: currentColor;
   width: 22px;
 }
 
 .hermes-reader-z9-message-tool:hover {
-  background: var(--hermes-subtle);
-  color: inherit;
+  background-color: var(--hermes-subtle);
+  opacity: 1;
 }
 
-.hermes-reader-z9-message-tool svg {
-  height: 14px;
-  width: 14px;
+.hermes-reader-z9-message-tool.is-icon-copy {
+  background-image: url("chrome://hermes-reading-assistant-z9/content/icons/copy.svg");
 }
 
-.hermes-reader-z9-message-tool.is-done {
-  color: var(--hermes-accent);
+.hermes-reader-z9-message-tool.is-icon-edit {
+  background-image: url("chrome://hermes-reading-assistant-z9/content/icons/edit.svg");
 }
+
+.hermes-reader-z9-message-tool.is-icon-copy.is-done {
+  background-image: url("chrome://hermes-reading-assistant-z9/content/icons/check.svg");
+  opacity: 1;
+  stroke: var(--hermes-accent);
+}
+

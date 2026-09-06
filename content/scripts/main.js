@@ -60,37 +60,15 @@ var HermesReadingAssistantZ9 = (() => {
     return node;
   }
 
-  const SVG_NS = "http://www.w3.org/2000/svg";
-
-  /** Inline SVG so the icon never depends on a glyph the system may not have. */
-  function iconButton(doc, paths, className, label) {
-    const node = button(doc, "", className);
+  /**
+   * Icons go on as a CSS background-image pointing at a chrome:// SVG — the
+   * pattern Zotero uses for its own item-pane icons. An inline <svg> element
+   * built with createElementNS renders as an empty box here.
+   */
+  function iconButton(doc, name, className, label) {
+    const node = button(doc, "", `${className} is-icon-${name}`);
     node.title = label;
     node.setAttribute("aria-label", label);
-    const svg = doc.createElementNS(SVG_NS, "svg");
-    svg.setAttribute("viewBox", "0 0 16 16");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("stroke", "currentColor");
-    svg.setAttribute("stroke-width", "1.4");
-    svg.setAttribute("stroke-linecap", "round");
-    svg.setAttribute("stroke-linejoin", "round");
-    for (const d of paths) {
-      const path = doc.createElementNS(SVG_NS, "path");
-      path.setAttribute("d", d);
-      svg.appendChild(path);
-    }
-    node.appendChild(svg);
-    return node;
-  }
-
-  const ICON_COPY = ["M5.5 5.5V3.2A1.2 1.2 0 0 1 6.7 2h6.1A1.2 1.2 0 0 1 14 3.2v6.1a1.2 1.2 0 0 1-1.2 1.2h-2.3",
-                     "M9.3 5.5H3.2A1.2 1.2 0 0 0 2 6.7v6.1A1.2 1.2 0 0 0 3.2 14h6.1a1.2 1.2 0 0 0 1.2-1.2V6.7a1.2 1.2 0 0 0-1.2-1.2Z"];
-  const ICON_DONE = ["M3 8.6 6.2 12 13 4.5"];
-  const ICON_EDIT = ["M11.2 2.6a1.6 1.6 0 0 1 2.2 2.2L6 12.3l-3 .8.8-3Z", "M10.2 3.6l2.2 2.2"];
-
-  function button(doc, label, className = "") {
-    const node = h(doc, "button", className, label);
-    node.type = "button";
     return node;
   }
 
@@ -1130,30 +1108,14 @@ var HermesReadingAssistantZ9 = (() => {
 
     buildMessageTools(article, role) {
       const tools = h(this.doc, "div", "hermes-reader-z9-message-tools");
-      const copy = iconButton(this.doc, ICON_COPY, "hermes-reader-z9-message-tool", "复制原始文本");
+      const copy = iconButton(this.doc, "copy", "hermes-reader-z9-message-tool", "复制原始文本");
       copy.addEventListener("click", () => {
         const value = HermesReaderCore.text(article.dataset.rawText);
         if (!value) return;
         try {
           Zotero.Utilities.Internal.copyTextToClipboard(value);
-          const svg = copy.querySelector("svg");
-          svg.replaceChildren();
-          for (const d of ICON_DONE) {
-            const path = this.doc.createElementNS(SVG_NS, "path");
-            path.setAttribute("d", d);
-            svg.appendChild(path);
-          }
           copy.classList.add("is-done");
-          this.doc.defaultView.setTimeout(() => {
-            if (!copy.isConnected) return;
-            svg.replaceChildren();
-            for (const d of ICON_COPY) {
-              const path = this.doc.createElementNS(SVG_NS, "path");
-              path.setAttribute("d", d);
-              svg.appendChild(path);
-            }
-            copy.classList.remove("is-done");
-          }, 1200);
+          this.doc.defaultView.setTimeout(() => copy.classList.remove("is-done"), 1200);
         } catch (error) {
           this.setStatus(error.message || error, true);
         }
@@ -1161,7 +1123,7 @@ var HermesReadingAssistantZ9 = (() => {
       tools.appendChild(copy);
 
       if (role === "user") {
-        const edit = iconButton(this.doc, ICON_EDIT, "hermes-reader-z9-message-tool", "放回输入框修改后重发");
+        const edit = iconButton(this.doc, "edit", "hermes-reader-z9-message-tool", "放回输入框修改后重发");
         edit.addEventListener("click", () => {
           this.input.value = HermesReaderCore.text(article.dataset.rawText);
           this.input.focus();

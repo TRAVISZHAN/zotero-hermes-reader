@@ -8,7 +8,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-VERSION = "0.7.3"
+VERSION = "0.7.4"
 XPI = ROOT / "dist" / f"Hermes-Reading-Assistant-Zotero9-{VERSION}.xpi"
 LEDGER = XPI.with_suffix(".release.json")
 EXPECTED_ID = "hermes-reading-assistant-z9@altail.local"
@@ -46,6 +46,9 @@ class TestZotero9Package(unittest.TestCase):
                 "content/vendor/katex.min.js",
                 "content/vendor/katex.LICENSE",
                 "content/icons/hermes-reader.svg",
+                "content/icons/copy.svg",
+                "content/icons/edit.svg",
+                "content/icons/check.svg",
                 "locale/en-US/hermes-reading-assistant.ftl",
                 "locale/zh-CN/hermes-reading-assistant.ftl",
             ]:
@@ -210,9 +213,18 @@ class TestZotero9Package(unittest.TestCase):
     def test_message_controls_are_icons_below_the_bubble(self):
         main = (ROOT / "content/scripts/main.js").read_text(encoding="utf-8")
         css = (ROOT / "content/hermes-reader.css").read_text(encoding="utf-8")
-        # Inline SVG, so the icon never depends on a system glyph.
-        self.assertIn("iconButton", main)
-        self.assertIn("http://www.w3.org/2000/svg", main)
+
+        # An inline <svg> built with createElementNS renders as an empty box in
+        # the item pane. Zotero's own icons are CSS background-images pointing
+        # at chrome:// SVGs, which is the pattern that actually paints here.
+        self.assertNotIn("createElementNS(SVG_NS", main)
+        for name in ["copy", "edit", "check"]:
+            self.assertIn(
+                f'url("chrome://hermes-reading-assistant-z9/content/icons/{name}.svg")', css
+            )
+        # The SVGs must inherit the button colour rather than bake one in.
+        self.assertIn("-moz-context-properties: fill, stroke", css)
+
         # Tools are a sibling of the bubble inside a block wrapper, not a child.
         self.assertIn("block.append(article, this.buildMessageTools(article, role))", main)
         self.assertIn("hermes-reader-z9-message-block", css)

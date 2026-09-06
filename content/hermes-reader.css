@@ -547,53 +547,80 @@
   padding: 4px 6px;
 }
 
-/* XUL chrome defaults to `-moz-user-select: none`, so text in the item pane
-   cannot be selected unless an element opts in — Zotero does the same thing
-   for its own selectable areas. Controls stay unselectable so dragging across
-   a message does not pick up button labels. */
-.hermes-reader-z9-message-content,
-.hermes-reader-z9-inline-quote,
-.hermes-reader-z9-quote,
-.hermes-reader-z9-title,
-.hermes-reader-z9-meta,
-.hermes-reader-z9-draft-editor,
-.hermes-reader-z9-evidence,
-.hermes-reader-z9-zotero-link,
-.hermes-reader-z9-request-command {
+
+/* XUL chrome inherits `-moz-user-select: none`, and Gecko walks up the
+   ancestor chain when a drag-selection starts — marking only the leaf nodes
+   selectable is not enough, the whole subtree has to opt in. Interactive
+   controls opt back out so dragging across a message never grabs a label. */
+.hermes-reader-z9 {
   -moz-user-select: text;
-  cursor: text;
   user-select: text;
 }
 
-.hermes-reader-z9 button {
+.hermes-reader-z9 button,
+.hermes-reader-z9 select,
+.hermes-reader-z9-message-label,
+.hermes-reader-z9-connection,
+.hermes-reader-z9-status-row {
   -moz-user-select: none;
   user-select: none;
 }
 
+/* Chrome documents have no selection highlight by default, so a working
+   selection would still look like nothing happened. */
+.hermes-reader-z9 ::selection {
+  background: color-mix(in srgb, var(--hermes-accent) 26%, transparent);
+  color: inherit;
+}
+
+/* Controls sit under the bubble, not inside it. */
+.hermes-reader-z9-message-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .hermes-reader-z9-message-tools {
   display: flex;
-  gap: 4px;
-  margin-top: 5px;
+  gap: 2px;
   opacity: 0;
+  padding-inline: 2px;
   transition: opacity 0.12s ease-in-out;
 }
 
-.hermes-reader-z9-message:hover .hermes-reader-z9-message-tools,
+.hermes-reader-z9-block-user .hermes-reader-z9-message-tools {
+  justify-content: flex-end;
+}
+
+.hermes-reader-z9-message-block:hover .hermes-reader-z9-message-tools,
 .hermes-reader-z9-message-tools:focus-within {
   opacity: 1;
 }
 
 .hermes-reader-z9-message-tool {
+  align-items: center;
   background: transparent;
-  border: 1px solid var(--hermes-border);
+  border: 0;
   border-radius: 4px;
   color: var(--fill-secondary, #62666d);
-  font-size: 0.76em;
-  line-height: 1.2;
-  padding: 2px 7px;
+  display: inline-flex;
+  height: 22px;
+  justify-content: center;
+  padding: 0;
+  width: 22px;
 }
 
 .hermes-reader-z9-message-tool:hover {
-  background: var(--hermes-surface);
+  background: var(--hermes-subtle);
   color: inherit;
+}
+
+.hermes-reader-z9-message-tool svg {
+  height: 14px;
+  width: 14px;
+}
+
+.hermes-reader-z9-message-tool.is-done {
+  color: var(--hermes-accent);
 }

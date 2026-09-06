@@ -8,7 +8,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-VERSION = "0.7.5"
+VERSION = "0.7.6"
 XPI = ROOT / "dist" / f"Hermes-Reading-Assistant-Zotero9-{VERSION}.xpi"
 LEDGER = XPI.with_suffix(".release.json")
 EXPECTED_ID = "hermes-reading-assistant-z9@altail.local"
@@ -231,6 +231,15 @@ class TestZotero9Package(unittest.TestCase):
         # Removing a failed turn must take its controls with it.
         self.assertIn("answer.block.remove()", main)
         self.assertNotIn("answer.article.remove()", main)
+
+    def test_standalone_pdfs_are_supported(self):
+        main = (ROOT / "content/scripts/main.js").read_text(encoding="utf-8")
+        # A bare PDF has no parent item, so isRegularItem() is never true for
+        # it; falling through to null hid the section entirely.
+        self.assertIn("paperFromStandaloneAttachment", main)
+        self.assertIn("attachment?.isPDFAttachment?.()", main)
+        self.assertIn("attachment.attachmentFilename", main)
+        self.assertIn("standalone: true", main)
 
     def test_ftl_messages_have_no_value(self):
         # A Fluent message value replaces the host element's textContent, which

@@ -20,7 +20,8 @@ let failed = false;
 const REQUIRED = [
   "h", "button", "iconButton", "log", "reportError", "prefString",
   "configuredGateway", "saveConfiguredGateway", "clearConfiguredGateway",
-  "pdfFileFromAttachment", "paperFromItem", "paperFromReader",
+  "pdfFileFromAttachment", "finishPaper", "paperFromRegularItem",
+  "paperFromStandaloneAttachment", "paperFromItem", "paperFromReader",
   "readSessionStore", "writeSessionBinding", "deleteSessionBinding",
   "listPaperSessions", "createPaperSession", "resumePaperSession",
   "ensurePaperSession", "registerController", "unregisterController",

@@ -95,36 +95,69 @@ var HermesReadingAssistantZ9 = (() => {
     };
   }
 
-  function paperFromItem(item) {
-    if (!item) return null;
-    let parent = item;
-    if (item.isAttachment?.()) {
-      parent = item.parentItemID ? Zotero.Items.get(item.parentItemID) : null;
-    } else if (item.isAnnotation?.()) {
-      const attachment = item.parentItemID ? Zotero.Items.get(item.parentItemID) : null;
-      parent = attachment?.parentItemID ? Zotero.Items.get(attachment.parentItemID) : null;
-    }
-    if (!parent?.isRegularItem?.()) return null;
+  function finishPaper(paper) {
+    paper.pdfKeys = paper.pdfFiles.map((file) => file.key);
+    paper.sessionKey = HermesReaderCore.sessionKey(paper);
+    paper.zoteroLink = HermesReaderCore.zoteroLink(paper);
+    return paper;
+  }
+
+  function paperFromRegularItem(parent) {
     const authors = parent.getCreators().map((creator) => {
       return [creator.firstName, creator.lastName].filter(Boolean).join(" ") || creator.name || "";
     }).filter(Boolean).join(", ");
     const date = HermesReaderCore.text(parent.getField("date"));
-    const pdfFiles = parent.getAttachments().map((id) => Zotero.Items.get(id)).filter((attachment) => {
-      return attachment?.isPDFAttachment?.();
-    }).map((attachment) => pdfFileFromAttachment(attachment));
-    const paper = {
+    return finishPaper({
       key: parent.key,
       libraryID: parent.libraryID,
       title: HermesReaderCore.text(parent.getField("title")),
       authors,
       year: (date.match(/\d{4}/) || [""])[0],
       doi: HermesReaderCore.text(parent.getField("DOI")),
-      pdfFiles,
-      pdfKeys: pdfFiles.map((file) => file.key),
-    };
-    paper.sessionKey = HermesReaderCore.sessionKey(paper);
-    paper.zoteroLink = HermesReaderCore.zoteroLink(paper);
-    return paper;
+      standalone: false,
+      pdfFiles: parent.getAttachments().map((id) => Zotero.Items.get(id))
+        .filter((attachment) => attachment?.isPDFAttachment?.())
+        .map((attachment) => pdfFileFromAttachment(attachment)),
+    });
+  }
+
+  /**
+   * A PDF dragged in without metadata has no parent item, so there is nothing
+   * to hang bibliographic fields on — the attachment itself is the paper. The
+   * session key is then the attachment's own key, which stays stable if a
+   * parent item is created later only in the sense that a new conversation
+   * starts; the old one remains listed under the attachment.
+   */
+  function paperFromStandaloneAttachment(attachment) {
+    const title = HermesReaderCore.text(attachment.getField("title"))
+      || HermesReaderCore.text(attachment.attachmentFilename)
+      || "未命名 PDF";
+    return finishPaper({
+      key: attachment.key,
+      libraryID: attachment.libraryID,
+      title,
+      authors: "",
+      year: "",
+      doi: "",
+      standalone: true,
+      pdfFiles: [pdfFileFromAttachment(attachment)],
+    });
+  }
+
+  function paperFromItem(item) {
+    if (!item) return null;
+    let attachment = null;
+    let parent = item;
+    if (item.isAnnotation?.()) {
+      attachment = item.parentItemID ? Zotero.Items.get(item.parentItemID) : null;
+      parent = attachment?.parentItemID ? Zotero.Items.get(attachment.parentItemID) : null;
+    } else if (item.isAttachment?.()) {
+      attachment = item;
+      parent = item.parentItemID ? Zotero.Items.get(item.parentItemID) : null;
+    }
+    if (parent?.isRegularItem?.()) return paperFromRegularItem(parent);
+    if (attachment?.isPDFAttachment?.()) return paperFromStandaloneAttachment(attachment);
+    return null;
   }
 
   function paperFromReader(reader) {

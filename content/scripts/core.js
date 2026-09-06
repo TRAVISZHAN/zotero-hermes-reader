@@ -174,12 +174,23 @@ var HermesReaderCore = (() => {
       `libraryID: ${paper.libraryID}`,
       `itemKey: ${paper.key}`,
       `title: ${paper.title || "未命名条目"}`,
-      `authors: ${paper.authors || "未知"}`,
-      `year: ${paper.year || "未知"}`,
-      `DOI: ${paper.doi || "无"}`,
-      ...pdfFileLines(paper),
-      `Zotero link: ${zoteroLink(paper)}`,
     ];
+    if (paper.standalone) {
+      // A bare PDF with no parent item: `itemKey` is the attachment's own key
+      // and there are no bibliographic fields to look up. Say so, or the model
+      // burns tool calls hunting for a record that does not exist.
+      lines.push(
+        "note: This is a standalone PDF attachment with no bibliographic record in Zotero.",
+        "note: Authors, year and DOI are unknown — read them from the PDF itself if needed.",
+      );
+    } else {
+      lines.push(
+        `authors: ${paper.authors || "未知"}`,
+        `year: ${paper.year || "未知"}`,
+        `DOI: ${paper.doi || "无"}`,
+      );
+    }
+    lines.push(...pdfFileLines(paper), `Zotero link: ${zoteroLink(paper)}`);
     if (selection?.text) {
       lines.push(
         "",

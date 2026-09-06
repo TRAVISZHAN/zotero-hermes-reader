@@ -154,6 +154,24 @@ assert.match(rulesPrompt, /Reuse what this conversation already contains/);
 assert.match(rulesPrompt, /do not fetch it again/);
 assert.match(rulesPrompt, /have not already established in this conversation/);
 
+// A PDF dragged in without metadata has no parent item. The panel must still
+// work, and the model must be told there is no record to look up.
+const bare = {
+  libraryID: 1, key: "STANDALONE1", title: "强流氘氚中子源用TiD2靶膜制备技术研究",
+  authors: "", year: "", doi: "", standalone: true,
+  pdfFiles: [{ key: "STANDALONE1", path: "/x/storage/STANDALONE1/a.pdf", relativePath: "storage/STANDALONE1/a.pdf" }],
+  pdfKeys: ["STANDALONE1"],
+};
+const barePrompt = core.buildPrompt({ paper: bare, question: "导读" });
+assert.match(barePrompt, /standalone PDF attachment with no bibliographic record/);
+assert.match(barePrompt, /itemKey: STANDALONE1/);
+assert.match(barePrompt, /PDF file: \/x\/storage\/STANDALONE1\/a\.pdf/);
+// Empty bibliographic lines would just be noise.
+assert.ok(!barePrompt.includes("authors: 未知"), "no empty author line for a bare PDF");
+assert.ok(!barePrompt.includes("DOI: 无"), "no empty DOI line for a bare PDF");
+// A normal item keeps them.
+assert.match(core.buildPrompt({ paper, question: "x" }), /DOI: 10\.1000\/test/);
+
 const draftAnswer = [
   "这是拟稿。",
   core.DRAFT_OPEN,
